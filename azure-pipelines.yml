@@ -1,0 +1,30 @@
+jobs:
+  - job: Mobile
+    pool:
+      name: 'local'
+    steps:
+
+      - task: Hey24sheep.flutter.flutter-build.FlutterBuild@0
+        displayName: 'Flutter Build '
+        inputs:
+          flutterDirectory: /Users/mohammadhammadi/development/flutter/bin
+          target: 'apk'
+          projectDirectory: '.'
+          entryPoint: "lib/main.dart"
+          # iosCodesign: false
+
+      - task: Hey24sheep.flutter.flutter-test.FlutterTest@0
+        displayName: 'Flutter Test'
+        inputs:
+          projectDirectory: .
+          testName: 'Pipelines test'
+
+      - task: CopyFiles@2
+        displayName: 'Copy Files to: $(build.artifactStagingDirectory)'
+        inputs:
+          SourceFolder: '**/*.apk'
+          targetFolder: '$(build.artifactStagingDirectory)'
+
+      - task: PublishBuildArtifacts@1
+        displayName: 'Publish Artifact: drop'
+
